@@ -1,0 +1,125 @@
+.todo {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background-color: $white;
+  padding: rem-calc(12) rem-calc(24);
+  border-radius: rem-calc(120);
+  font-size: rem-calc(16);
+  font-weight: 600;
+  flex: 1;
+  flex-wrap: wrap;
+
+  .todoCheck {
+    flex: 1;
+    overflow: hidden;
+    display: flex;
+    gap: rem-calc(12);
+    justify-content: start;
+    align-items: center;
+    width: 100%;
+
+    .todoTitle {
+      text-align: left;
+      cursor: pointer;
+      flex: 1;
+      display: flex;
+      align-items: center;
+      gap: rem-calc(12);
+
+      &.completed {
+        text-decoration: line-through;
+      }
+    }
+    .todoTitle:hover {
+      text-decoration: underline;
+    }
+  }
+  .deleteIcon {
+    cursor: pointer;
+    stroke: #292d32;
+  }
+  .deleteIcon:hover {
+    stroke: red;
+  }
+}
+.isPending {
+  opacity: 0.5;
+}
+
+/* Basic styling */
+[type='checkbox'] {
+  width: rem-calc(24);
+  height: rem-calc(24);
+  color: #601feb;
+  vertical-align: middle;
+  -webkit-appearance: none;
+  background: none;
+  border: 0;
+  outline: 0;
+  flex-grow: 0;
+  border-radius: rem-calc(5);
+  background-color: #ffffff;
+  transition: background 300ms;
+  cursor: pointer;
+}
+
+/* Pseudo element for check styling */
+
+[type='checkbox']::before {
+  content: '';
+  color: transparent;
+  display: block;
+  width: inherit;
+  height: inherit;
+  border-radius: inherit;
+  border: 0;
+  background-color: transparent;
+  background-size: contain;
+  box-shadow: inset 0 0 0 1px #bdbdbd;
+}
+
+/* Checked */
+
+[type='checkbox']:checked {
+  background-color: currentcolor;
+}
+
+[type='checkbox']:checked::before {
+  box-shadow: none;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='24' height='24' viewBox='0 0 24 24'%3E %3Cpath d='M15.88 8.29L10 14.17l-1.88-1.88a.996.996 0 1 0-1.41 1.41l2.59 2.59c.39.39 1.02.39 1.41 0L17.3 9.7a.996.996 0 0 0 0-1.41c-.39-.39-1.03-.39-1.42 0z' fill='%23fff'/%3E %3C/svg%3E");
+}
+
+/* Disabled */
+
+[type='checkbox']:disabled {
+  background-color: #ccd3d8;
+  opacity: 0.84;
+  cursor: not-allowed;
+}
+
+/* IE */
+
+[type='checkbox']::-ms-check {
+  content: '';
+  color: transparent;
+  display: block;
+  width: inherit;
+  height: inherit;
+  border-radius: inherit;
+  border: 0;
+  background-color: transparent;
+  background-size: contain;
+  box-shadow: inset 0 0 0 1px #bdbdbd;
+}
+
+[type='checkbox']:checked::-ms-check {
+  box-shadow: none;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='24' height='24' viewBox='0 0 24 24'%3E %3Cpath d='M15.88 8.29L10 14.17l-1.88-1.88a.996.996 0 1 0-1.41 1.41l2.59 2.59c.39.39 1.02.39 1.41 0L17.3 9.7a.996.996 0 0 0 0-1.41c-.39-.39-1.03-.39-1.42 0z' fill='%23fff'/%3E %3C/svg%3E");
+}
+
+@media (min-width: 768px) {
+  .todo {
+    flex: 1;
+  }
+}

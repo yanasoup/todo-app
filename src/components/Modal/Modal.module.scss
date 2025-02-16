@@ -1,0 +1,86 @@
+.todoDialog {
+  border: none;
+  border-radius: rem-calc(16);
+  padding: rem-calc(24);
+  background-color: #fff;
+
+  .closeIcon {
+    position: absolute;
+    top: rem-calc(24);
+    right: rem-calc(24);
+    cursor: pointer;
+  }
+
+  h2 {
+    font-size: rem-calc(24);
+    font-weight: 600;
+    text-align: center;
+    margin-bottom: rem-calc(24);
+  }
+  input {
+    margin-bottom: rem-calc(24);
+    min-width: rem-calc(500);
+    border: 1px solid #e0e0e0;
+    padding: rem-calc(15) rem-calc(24);
+    font-size: rem-calc(16);
+    color: #212121;
+  }
+
+  form {
+    button {
+      padding: rem-calc(12) rem-calc(32);
+      cursor: pointer;
+      flex: 1;
+      border-radius: rem-calc(24);
+      width: 100%;
+
+      span {
+        font-size: rem-calc(16);
+        font-weight: 600;
+      }
+    }
+  }
+
+  p {
+    margin: 0.5rem 0;
+    font-size: 1rem;
+  }
+
+  p strong {
+    color: #10655b;
+  }
+
+  .todoDialog button:hover {
+    background: #051715;
+  }
+}
+.todoDialog[open] {
+  animation: slide-in-from-top 0.35s ease-out;
+}
+
+.todoDialog::backdrop {
+  background: rgba(0, 0, 0, 0.7);
+}
+
+@keyframes slide-in-from-top {
+  0% {
+    transform: translateY(-15%);
+    opacity: 0;
+  }
+  100% {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}
+
+@keyframes flash {
+  0% {
+    opacity: 0.5;
+  }
+  50% {
+    opacity: 1;
+  }
+  100% {
+    opacity: 0.5;
+  }
+}

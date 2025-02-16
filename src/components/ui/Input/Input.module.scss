@@ -1,0 +1,14 @@
+.input {
+  border: 1px solid #e0e0e0;
+  padding: rem-calc(8) rem-calc(6);
+  font-size: rem-calc(16);
+  outline: none;
+  border-radius: rem-calc(120);
+}
+.input::placeholder {
+  color: #9e9e9e;
+}
+
+.input:focus {
+  box-shadow: 0 0 3px rgba(0, 0, 0, 0.2);
+}

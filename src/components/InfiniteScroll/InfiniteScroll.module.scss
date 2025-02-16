@@ -1,0 +1,15 @@
+.todoList {
+  display: flex;
+  flex-direction: column;
+  gap: rem-calc(16);
+  width: 500px;
+  margin: 0 auto;
+  flex: 1 1 0%;
+
+  .todoItem {
+    padding: rem-calc(8) rem-calc(24);
+    background-color: #ccc;
+    color: #000;
+    margin: 0 auto;
+  }
+}
