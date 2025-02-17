@@ -29,7 +29,7 @@ const Modal: React.FC<{
         dialog.close();
       }
     }
-  }, [isOpen]);
+  }, [isOpen, todoItem]);
 
   if (!portalElement) {
     throw new Error('Portal element not found');

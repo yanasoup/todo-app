@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Todo } from '@/models/todo';
 import TrashIcon from '@/assets/svg/icon-trash.svg';
 import styles from './TodoItem.module.scss';
@@ -21,12 +21,20 @@ export const TodoItem: React.FC<TodoItemProps> = ({
   children,
   isPending = false,
 }) => {
-  const [isCompleted, setIsCompleted] = useState(item?.completed || false);
+  const [isCompleted, setIsCompleted] = useState(item.completed);
 
-  const handleCheck = (id: string, title: string, completed: boolean) => {
-    setIsCompleted(!isCompleted);
-    onToggle(id, title, completed);
+  const handleChange = (completed: boolean) => {
+    onToggle(item.id, item.title, completed);
+    setIsCompleted(completed);
   };
+
+  useEffect(() => {
+    setIsCompleted(item.completed);
+    // const watchedItems = ['baru1', 'baru2', 'baru3'];
+    // if (watchedItems.includes(item.title)) {
+    //   console.log('init param', item.completed);
+    // }
+  }, [item.completed]);
 
   const titleClass = isCompleted
     ? clsx(styles.todoTitle, styles.completed)
@@ -40,24 +48,27 @@ export const TodoItem: React.FC<TodoItemProps> = ({
     <>
       <li className={liClass}>
         <div className={styles.todoCheck}>
-          <input
-            type='checkbox'
-            className={styles.todoCheckbox}
-            onClick={() => handleCheck(item.id, item.title, item.completed)}
-            checked={isCompleted}
-            onChange={(e) => setIsCompleted(e.target.checked)}
-          />
+          {!isPending && (
+            <input
+              type='checkbox'
+              className={styles.todoCheckbox}
+              checked={isCompleted}
+              onChange={(e) => handleChange(e.target.checked)}
+            />
+          )}
           <p className={titleClass} onClick={() => onEdit(item.id)}>
             <span>{item.title}</span>
             {isPending && <BeatLoader size={16} />}
           </p>
           {children}
         </div>
-        <TrashIcon
-          data-id={item.id}
-          className={styles.deleteIcon}
-          onClick={onDelete}
-        />
+        {!isPending && (
+          <TrashIcon
+            data-id={item.id}
+            className={styles.deleteIcon}
+            onClick={onDelete}
+          />
+        )}
       </li>
     </>
   );

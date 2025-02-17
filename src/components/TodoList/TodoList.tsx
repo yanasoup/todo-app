@@ -10,17 +10,12 @@ import { useOptimisticCreateTodo } from '@/hooks/useCreateTodo';
 import { useOptimisticDeleteTodo } from '@/hooks/useDeleteTodo';
 import { TodoItem } from '@/components/TodoItem/TodoItem';
 import { OptimisticCreateTodoParams } from '@/models/todo';
-import {
-  useUpdateTodo,
-  useOptimisticUpdateTodo,
-  // useOptimisticUIUpdateTodo,
-} from '@/hooks/useUpdateTodo';
+import { useOptimisticUpdateTodo } from '@/hooks/useUpdateTodo';
 
 import Modal from '@/components/Modal/Modal';
 import { v4 as uuid } from 'uuid';
 
 import { useIntersectionObserver } from '@/hooks/general/useIntersectionObserver';
-// import { useInView } from 'react-intersection-observer';
 
 export const TodoList: React.FC = () => {
   const [newTodoText, setNewTodoText] = useState('');
@@ -36,8 +31,6 @@ export const TodoList: React.FC = () => {
     isLoading,
     error,
     queryKey,
-    isSuccess,
-    isFetching,
   } = useScrollTodos({ limit: 20, sort: 'date', order: 'desc' });
 
   const observerRef = useIntersectionObserver(() => {
@@ -47,8 +40,7 @@ export const TodoList: React.FC = () => {
   const addTodoMutation = useOptimisticCreateTodo();
 
   const { deleteTodo } = useOptimisticDeleteTodo();
-  const { updateTodo } = useUpdateTodo();
-  const { optimisticUpdateTodo } = useOptimisticUpdateTodo();
+  const { optimisticUpdateTodo, isUpdating } = useOptimisticUpdateTodo();
 
   const handleAddTodo = (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
@@ -58,16 +50,15 @@ export const TodoList: React.FC = () => {
         id: uuid(),
         title: newTodoText,
         completed: false,
-        date: new Date(), // temporary
+        date: new Date(),
       },
       queryKey,
     };
 
     if (newTodoText.trim() != '') {
-      // addTodoMutation.createTodo(variables.newTodo);
       addTodoMutation.mutate(variables);
       setNewTodoText('');
-      setMutationMessage('Todo created successfully!');
+      setMutationMessage('Task created successfully!');
     }
   };
 
@@ -81,14 +72,14 @@ export const TodoList: React.FC = () => {
     }
 
     return () => clearTimeout(timeoutId);
-  }, [mutationMessage, setMutationMessage, isFetching, isSuccess]);
+  }, [mutationMessage, setMutationMessage]);
 
   const handleDeleteTodo = (e: MouseEvent<SVGElement>) => {
     const id = e.currentTarget.dataset.id;
 
     if (id) {
       deleteTodo({ id, queryKey });
-      setMutationMessage('Todo deleted successfully!');
+      setMutationMessage('Task deleted successfully!');
     }
   };
 
@@ -110,13 +101,19 @@ export const TodoList: React.FC = () => {
     };
 
     optimisticUpdateTodo(variables);
-    setMutationMessage('Todo updated successfully!');
+    setMutationMessage('Task updated successfully!');
   };
 
   const handleToggleTodo = (id: string, title: string, completed: boolean) => {
-    updateTodo({ id, title, completed: !completed });
+    const updatedTodo = { id, title, completed, date: new Date() };
+    const variables: OptimisticCreateTodoParams = {
+      newTodo: updatedTodo,
+      queryKey,
+    };
+
+    optimisticUpdateTodo(variables);
     setMutationMessage(
-      `Todo ${title} marked as ${!completed ? 'completed' : 'incomplete'}`
+      `Task ${title} marked as ${completed ? 'completed' : 'incomplete'}`
     );
   };
 
@@ -153,17 +150,22 @@ export const TodoList: React.FC = () => {
           </form>
           <div className={styles.listContainer}>
             <ul className={styles.todoLists}>
-              {todos.map((todo) => (
-                <TodoItem
-                  key={todo.id}
-                  item={todo}
-                  onDelete={handleDeleteTodo}
-                  onEdit={() => handleStartEditTodo(todo.id)}
-                  onToggle={() =>
-                    handleToggleTodo(todo.id, todo.title, todo.completed)
-                  }
-                />
-              ))}
+              {todos.map((todo, idx) => {
+                const isTodoPending =
+                  idx === 0 && (addTodoMutation.isPending || isUpdating)
+                    ? true
+                    : false;
+                return (
+                  <TodoItem
+                    key={idx}
+                    item={todo}
+                    onDelete={handleDeleteTodo}
+                    onEdit={() => handleStartEditTodo(todo.id)}
+                    onToggle={handleToggleTodo}
+                    isPending={isTodoPending}
+                  />
+                );
+              })}
             </ul>
 
             <div ref={observerRef} className={styles.observer}>
