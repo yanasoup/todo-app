@@ -24,17 +24,13 @@ export const TodoItem: React.FC<TodoItemProps> = ({
   const [isCompleted, setIsCompleted] = useState(item.completed);
 
   const handleChange = (completed: boolean) => {
-    onToggle(item.id, item.title, completed);
     setIsCompleted(completed);
+    onToggle(item.id, item.title, completed);
   };
 
   useEffect(() => {
     setIsCompleted(item.completed);
-    // const watchedItems = ['baru1', 'baru2', 'baru3'];
-    // if (watchedItems.includes(item.title)) {
-    //   console.log('init param', item.completed);
-    // }
-  }, [item.completed]);
+  }, [item.completed, item.title]);
 
   const titleClass = isCompleted
     ? clsx(styles.todoTitle, styles.completed)

@@ -1,4 +1,4 @@
-import React, { useRef, useEffect } from 'react';
+import React, { useRef, useEffect, useState } from 'react';
 import { createPortal } from 'react-dom';
 import styles from './Modal.module.scss';
 import { Button } from '../ui/Button';
@@ -14,7 +14,7 @@ const Modal: React.FC<{
   onConfirm: (data: Todo) => void;
 }> = ({ children, onDialogClose, todoItem, isOpen, onConfirm }) => {
   const portalElement = document.getElementById('portal');
-  const [newTodoText, setNewTodoText] = React.useState('');
+  const [newTodoText, setNewTodoText] = useState('');
 
   const dialogRef = useRef<HTMLDialogElement>(null);
 
