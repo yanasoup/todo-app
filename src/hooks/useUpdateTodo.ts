@@ -68,6 +68,7 @@ type UseOptimisticUpdateTodoReturn = {
   optimisticUpdateTodo: (params: OptimisticCreateTodoParams) => void;
   isUpdating: boolean;
   error: Error | null;
+  isSuccess: boolean;
 };
 
 export const useOptimisticUpdateTodo = (): UseOptimisticUpdateTodoReturn => {
@@ -80,49 +81,42 @@ export const useOptimisticUpdateTodo = (): UseOptimisticUpdateTodoReturn => {
       await queryClient.cancelQueries({ queryKey });
       const previousData =
         queryClient.getQueryData<InfiniteData<TodosResponse>>(queryKey);
-      // console.log('useOptimisticUpdateTodo previousData', previousData);
 
       if (previousData) {
-        // Optimistically update the cache by removing the deleted item
-        const updatedData = {
-          ...previousData,
-          pages: previousData.pages.map((page) => {
-            const oldTodosWithoutCurrentUpdatedTodo = page.todos.filter(
-              (todo) => todo.id !== newTodo.id
-            );
+        // const updatedData = {
+        //   ...previousData,
+        //   pages: previousData.pages.map((page) => {
+        //     const oldTodosWithoutCurrentUpdatedTodo = page.todos.filter(
+        //       (todo) => todo.id !== newTodo.id
+        //     );
 
-            return {
-              ...page,
-              todos: [newTodo, ...oldTodosWithoutCurrentUpdatedTodo],
-            };
-          }),
-        };
+        //     return {
+        //       ...page,
+        //       todos: [newTodo, ...oldTodosWithoutCurrentUpdatedTodo],
+        //     };
+        //   }),
+        // };
+
+        // start: prevent todo to always rendered in 1st order in the list when edited
+        const updatedItemIndex = previousData.pages[0].todos.findIndex(
+          (todo) => todo.id === newTodo.id
+        );
+        let updatedItem = previousData.pages[0].todos[updatedItemIndex];
+        updatedItem = { ...updatedItem, ...newTodo };
+
+        const updatedData = previousData;
+        updatedData.pages[0].todos[updatedItemIndex] = updatedItem;
+        // end
 
         queryClient.setQueryData(queryKey, updatedData);
       }
 
-      // if (previousData) {
-      //   const updatedData = {
-      //     ...previousData,
-      //     pages: previousData.pages.map((page) => ({
-      //       ...page,
-      //       todos: [newTodo, ...page.todos],
-      //     })),
-      //   };
-
-      //   queryClient.setQueryData(queryKey, updatedData);
-      // }
-
-      // Return a context object with the snapshotted value
       return { previousData, queryKey };
     },
-    // If the mutation fails,
-    // use the context returned from onMutate to roll back
     onError: (err, newTodo, context) => {
       if (context)
         queryClient.setQueryData(context.queryKey, context.previousData);
     },
-    // Always refetch after error or success:
     onSettled: (_data, _error, variables) => {
       queryClient.invalidateQueries({ queryKey: variables.queryKey });
     },
@@ -132,5 +126,6 @@ export const useOptimisticUpdateTodo = (): UseOptimisticUpdateTodoReturn => {
     optimisticUpdateTodo: updateTodoMutation.mutate,
     isUpdating: updateTodoMutation.isPending,
     error: updateTodoMutation.error,
+    isSuccess: updateTodoMutation.isSuccess,
   };
 };

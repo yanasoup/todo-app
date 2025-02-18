@@ -9,7 +9,7 @@ import IconClose from '@/assets/svg/icon-close.svg';
 const Modal: React.FC<{
   children?: React.ReactNode;
   onDialogClose?: () => void;
-  todoItem: Todo | undefined;
+  todoItem: Todo | null;
   isOpen: boolean;
   onConfirm: (data: Todo) => void;
 }> = ({ children, onDialogClose, todoItem, isOpen, onConfirm }) => {

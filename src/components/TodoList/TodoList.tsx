@@ -1,4 +1,10 @@
-import React, { useState, FormEvent, MouseEvent, useEffect } from 'react';
+import React, {
+  useState,
+  FormEvent,
+  MouseEvent,
+  useEffect,
+  useContext,
+} from 'react';
 import { Button } from '@/components/ui/Button';
 import { Input } from '@/components/ui/Input';
 import styles from './TodoList.module.scss';
@@ -16,12 +22,14 @@ import Modal from '@/components/Modal/Modal';
 import { v4 as uuid } from 'uuid';
 
 import { useIntersectionObserver } from '@/hooks/general/useIntersectionObserver';
+import { TodoContext } from '@/context/TodoContext';
 
 export const TodoList: React.FC = () => {
   const [newTodoText, setNewTodoText] = useState('');
   const [mutationMessage, setMutationMessage] = useState('');
   const [isEditing, setIsEditing] = useState(false);
-  const [editedTodo, setEditedTodo] = useState<Todo>();
+  const [disabledInput, setDisabledInput] = useState(false);
+  // const [editedTodo, setEditedTodo] = useState<Todo>();
 
   const {
     todos,
@@ -32,15 +40,37 @@ export const TodoList: React.FC = () => {
     error,
     queryKey,
   } = useScrollTodos({ limit: 20, sort: 'date', order: 'desc' });
+  const addTodoMutation = useOptimisticCreateTodo();
+  const { deleteTodo } = useOptimisticDeleteTodo();
+  const { optimisticUpdateTodo, isUpdating } = useOptimisticUpdateTodo();
 
+  useEffect(() => {
+    setDisabledInput(addTodoMutation.isPending || isUpdating ? true : false);
+
+    let timeoutId: NodeJS.Timeout;
+
+    if (mutationMessage) {
+      timeoutId = setTimeout(() => {
+        setMutationMessage('');
+      }, 2000);
+    }
+
+    return () => clearTimeout(timeoutId);
+  }, [
+    mutationMessage,
+    setMutationMessage,
+    addTodoMutation.isPending,
+    isUpdating,
+  ]);
   const observerRef = useIntersectionObserver(() => {
     if (hasNextPage) fetchNextPage();
   });
 
-  const addTodoMutation = useOptimisticCreateTodo();
-
-  const { deleteTodo } = useOptimisticDeleteTodo();
-  const { optimisticUpdateTodo, isUpdating } = useOptimisticUpdateTodo();
+  const context = useContext(TodoContext);
+  if (!context) {
+    return <div>Error: TodoContext not found</div>;
+  }
+  const { editedTodo, setEditedTodo } = context;
 
   const handleAddTodo = (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
@@ -57,22 +87,11 @@ export const TodoList: React.FC = () => {
 
     if (newTodoText.trim() != '') {
       addTodoMutation.mutate(variables);
+      setEditedTodo(variables.newTodo);
       setNewTodoText('');
       setMutationMessage('Task created successfully!');
     }
   };
-
-  useEffect(() => {
-    let timeoutId: NodeJS.Timeout;
-
-    if (mutationMessage) {
-      timeoutId = setTimeout(() => {
-        setMutationMessage('');
-      }, 2000);
-    }
-
-    return () => clearTimeout(timeoutId);
-  }, [mutationMessage, setMutationMessage]);
 
   const handleDeleteTodo = (e: MouseEvent<SVGElement>) => {
     const id = e.currentTarget.dataset.id;
@@ -110,7 +129,7 @@ export const TodoList: React.FC = () => {
       newTodo: updatedTodo,
       queryKey,
     };
-
+    setEditedTodo(updatedTodo);
     optimisticUpdateTodo(variables);
     setMutationMessage(
       `Task ${title} marked as ${completed ? 'completed' : 'incomplete'}`
@@ -145,14 +164,19 @@ export const TodoList: React.FC = () => {
               placeholder='Create new task'
               onChangeHandler={(e) => setNewTodoText(e.target.value)}
               value={newTodoText}
+              disabled={disabledInput}
             />
-            <Button color='primaryPurple'>Add</Button>
+            <Button color='primaryPurple' disabled={disabledInput}>
+              Add
+            </Button>
           </form>
           <div className={styles.listContainer}>
             <ul className={styles.todoLists}>
               {todos.map((todo, idx) => {
                 const isTodoPending =
-                  idx === 0 && (addTodoMutation.isPending || isUpdating)
+                  // idx === 0 && (addTodoMutation.isPending || isUpdating)
+                  todo.id === editedTodo?.id &&
+                  (addTodoMutation.isPending || isUpdating)
                     ? true
                     : false;
                 return (

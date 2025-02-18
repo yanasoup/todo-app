@@ -33,12 +33,19 @@ export const TodoItem: React.FC<TodoItemProps> = ({
   }, [item.completed, item.title]);
 
   const titleClass = isCompleted
-    ? clsx(styles.todoTitle, styles.completed)
-    : clsx(styles.todoTitle);
+    ? clsx(styles.titleText, styles.completed)
+    : clsx(styles.titleText);
 
   const liClass = isPending
     ? clsx(styles.todo, styles.isPending)
     : clsx(styles.todo);
+
+  const formattedDate = new Date(item.date).toLocaleDateString('en-US', {
+    day: 'numeric',
+    month: 'long',
+    year: 'numeric',
+  });
+  const formattedTime = new Date(item.date).toLocaleTimeString('en-US');
 
   return (
     <>
@@ -52,10 +59,16 @@ export const TodoItem: React.FC<TodoItemProps> = ({
               onChange={(e) => handleChange(e.target.checked)}
             />
           )}
-          <p className={titleClass} onClick={() => onEdit(item.id)}>
-            <span>{item.title}</span>
+          <div className={styles.todoTitle} onClick={() => onEdit(item.id)}>
+            <p className={styles.titleAndTime}>
+              <span className={titleClass}>{item.title}</span>
+              <span className={styles.completedDateTime}>
+                {isCompleted &&
+                  `task completed @${formattedDate} ${formattedTime}`}
+              </span>
+            </p>
             {isPending && <BeatLoader size={16} />}
-          </p>
+          </div>
           {children}
         </div>
         {!isPending && (

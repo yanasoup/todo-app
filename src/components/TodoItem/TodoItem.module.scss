@@ -27,8 +27,21 @@
       align-items: center;
       gap: rem-calc(12);
 
-      &.completed {
-        text-decoration: line-through;
+      .titleAndTime {
+        display: flex;
+        flex-direction: column;
+
+        .titleText {
+          &.completed {
+            text-decoration: line-through;
+          }
+        }
+        .completedDateTime {
+          font-size: rem-calc(11);
+          color: #9e9e9e;
+          font-weight: 300;
+          font-style: italic;
+        }
       }
     }
     .todoTitle:hover {
