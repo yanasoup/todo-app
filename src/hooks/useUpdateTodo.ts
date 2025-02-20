@@ -83,29 +83,35 @@ export const useOptimisticUpdateTodo = (): UseOptimisticUpdateTodoReturn => {
         queryClient.getQueryData<InfiniteData<TodosResponse>>(queryKey);
 
       if (previousData) {
-        // const updatedData = {
-        //   ...previousData,
-        //   pages: previousData.pages.map((page) => {
-        //     const oldTodosWithoutCurrentUpdatedTodo = page.todos.filter(
-        //       (todo) => todo.id !== newTodo.id
-        //     );
+        const tmpUpdatedData = { ...previousData };
+        const updatedData = {
+          ...previousData,
+          pages: previousData.pages.map((page, pageIdx) => {
+            const updatedItemIndex = page.todos.findIndex(
+              (todo) => todo.id === newTodo.id
+            );
 
-        //     return {
-        //       ...page,
-        //       todos: [newTodo, ...oldTodosWithoutCurrentUpdatedTodo],
-        //     };
-        //   }),
-        // };
+            if (updatedItemIndex !== -1) {
+              // langsung replace todo lama, tidak perlu di remove dulu
+              tmpUpdatedData.pages[pageIdx].todos[updatedItemIndex] = {
+                ...page.todos[updatedItemIndex],
+                ...newTodo,
+              };
+            }
+            return tmpUpdatedData.pages[pageIdx];
+          }),
+        };
 
         // start: prevent todo to always rendered in 1st order in the list when edited
-        const updatedItemIndex = previousData.pages[0].todos.findIndex(
-          (todo) => todo.id === newTodo.id
-        );
-        let updatedItem = previousData.pages[0].todos[updatedItemIndex];
-        updatedItem = { ...updatedItem, ...newTodo };
+        // masalah dengan kode ini adalah, todo item harus berada di pageindex 0
+        // const updatedItemIndex = previousData.pages[0].todos.findIndex(
+        //   (todo) => todo.id === newTodo.id
+        // );
+        // let updatedItem = previousData.pages[0].todos[updatedItemIndex];
+        // updatedItem = { ...updatedItem, ...newTodo };
 
-        const updatedData = previousData;
-        updatedData.pages[0].todos[updatedItemIndex] = updatedItem;
+        // const updatedData = previousData;
+        // updatedData.pages[0].todos[updatedItemIndex] = updatedItem;
         // end
 
         queryClient.setQueryData(queryKey, updatedData);

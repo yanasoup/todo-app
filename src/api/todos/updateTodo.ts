@@ -20,7 +20,7 @@ export const updateTodo: MutationFunction<
 };
 
 export const optimisticUpdateTodo: MutationFunction<
-  Todo | void,
+  UpdateTodoParams | void,
   OptimisticCreateTodoParams
 > = async ({ newTodo }) => {
   const response = await customAxios.put(`/todos/${newTodo.id}`, newTodo);

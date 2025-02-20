@@ -29,7 +29,6 @@ export const TodoList: React.FC = () => {
   const [mutationMessage, setMutationMessage] = useState('');
   const [isEditing, setIsEditing] = useState(false);
   const [disabledInput, setDisabledInput] = useState(false);
-  // const [editedTodo, setEditedTodo] = useState<Todo>();
 
   const {
     todos,
@@ -39,13 +38,14 @@ export const TodoList: React.FC = () => {
     isLoading,
     error,
     queryKey,
-  } = useScrollTodos({ limit: 20, sort: 'date', order: 'desc' });
+  } = useScrollTodos({ limit: 20, sort: 'id', order: 'asc' });
+
   const addTodoMutation = useOptimisticCreateTodo();
   const { deleteTodo } = useOptimisticDeleteTodo();
   const { optimisticUpdateTodo, isUpdating } = useOptimisticUpdateTodo();
 
   useEffect(() => {
-    setDisabledInput(addTodoMutation.isPending || isUpdating ? true : false);
+    // setDisabledInput(addTodoMutation.isPending || isUpdating ? true : false);
 
     let timeoutId: NodeJS.Timeout;
 
@@ -174,7 +174,6 @@ export const TodoList: React.FC = () => {
             <ul className={styles.todoLists}>
               {todos.map((todo, idx) => {
                 const isTodoPending =
-                  // idx === 0 && (addTodoMutation.isPending || isUpdating)
                   todo.id === editedTodo?.id &&
                   (addTodoMutation.isPending || isUpdating)
                     ? true

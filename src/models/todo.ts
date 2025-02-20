@@ -16,6 +16,7 @@ export type UpdateTodoParams = {
   id: string;
   title: string;
   completed: boolean;
+  date?: Date;
 };
 
 export type OptimisticCreateTodoParams = {

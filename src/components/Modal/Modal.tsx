@@ -36,7 +36,7 @@ const Modal: React.FC<{
   }
 
   const confirmHandler = () => {
-    const updatedTodo = { ...todoItem, title: newTodoText, date: new Date() };
+    const updatedTodo = { ...todoItem, title: newTodoText }; // no need to add date, date is for created and completed time only
     onConfirm(updatedTodo as Todo);
   };
   return createPortal(
@@ -64,7 +64,7 @@ const Modal: React.FC<{
         </Button>
       </form>
     </dialog>,
-    portalElement // Target DOM di luar root utama
+    portalElement
   );
 };
 

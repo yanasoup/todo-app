@@ -30,7 +30,7 @@ export const TodoItem: React.FC<TodoItemProps> = ({
 
   useEffect(() => {
     setIsCompleted(item.completed);
-  }, [item.completed, item.title]);
+  }, [item.completed]);
 
   const titleClass = isCompleted
     ? clsx(styles.titleText, styles.completed)
@@ -67,10 +67,10 @@ export const TodoItem: React.FC<TodoItemProps> = ({
                   `task completed @${formattedDate} ${formattedTime}`}
               </span>
             </p>
-            {isPending && <BeatLoader size={16} />}
           </div>
           {children}
         </div>
+        {isPending && <BeatLoader size={16} />}
         {!isPending && (
           <TrashIcon
             data-id={item.id}
