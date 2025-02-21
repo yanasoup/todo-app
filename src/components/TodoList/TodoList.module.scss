@@ -59,10 +59,10 @@
   width: 100%;
   display: block;
   text-align: center;
+  z-index: 100;
 }
 .flashMessage {
   display: inline-block;
-  z-index: 9999;
   animation: fadeOut 2s ease-in-out forwards;
   padding: rem-calc(4) rem-calc(8);
   background-color: #444;

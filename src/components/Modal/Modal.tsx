@@ -6,7 +6,7 @@ import { Input } from '../ui/Input';
 import { Todo } from '@/models/todo';
 import IconClose from '@/assets/svg/icon-close.svg';
 
-const Modal: React.FC<{
+export const Modal: React.FC<{
   children?: React.ReactNode;
   onDialogClose?: () => void;
   todoItem: Todo | null;
@@ -67,5 +67,3 @@ const Modal: React.FC<{
     portalElement
   );
 };
-
-export default Modal;

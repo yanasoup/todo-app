@@ -50,15 +50,18 @@ export const TodoItem: React.FC<TodoItemProps> = ({
   return (
     <>
       <li className={liClass}>
+        {isPending && (
+          <div className={styles.loaderDiv}>
+            <BeatLoader size={16} />
+          </div>
+        )}
         <div className={styles.todoCheck}>
-          {!isPending && (
-            <input
-              type='checkbox'
-              className={styles.todoCheckbox}
-              checked={isCompleted}
-              onChange={(e) => handleChange(e.target.checked)}
-            />
-          )}
+          <input
+            type='checkbox'
+            className={styles.todoCheckbox}
+            checked={isCompleted}
+            onChange={(e) => handleChange(e.target.checked)}
+          />
           <div className={styles.todoTitle} onClick={() => onEdit(item.id)}>
             <p className={styles.titleAndTime}>
               <span className={titleClass}>{item.title}</span>
@@ -70,7 +73,7 @@ export const TodoItem: React.FC<TodoItemProps> = ({
           </div>
           {children}
         </div>
-        {isPending && <BeatLoader size={16} />}
+
         {!isPending && (
           <TrashIcon
             data-id={item.id}

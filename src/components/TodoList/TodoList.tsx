@@ -14,11 +14,11 @@ import { Todo } from '@/models/todo';
 import { useScrollTodos } from '@/hooks/useScrollTodos';
 import { useOptimisticCreateTodo } from '@/hooks/useCreateTodo';
 import { useOptimisticDeleteTodo } from '@/hooks/useDeleteTodo';
-import { TodoItem } from '@/components/TodoItem/TodoItem';
+import { TodoItem } from '@/components/TodoItem';
 import { OptimisticCreateTodoParams } from '@/models/todo';
 import { useOptimisticUpdateTodo } from '@/hooks/useUpdateTodo';
 
-import Modal from '@/components/Modal/Modal';
+import { Modal } from '@/components/Modal';
 import { v4 as uuid } from 'uuid';
 
 import { useIntersectionObserver } from '@/hooks/general/useIntersectionObserver';
@@ -28,7 +28,6 @@ export const TodoList: React.FC = () => {
   const [newTodoText, setNewTodoText] = useState('');
   const [mutationMessage, setMutationMessage] = useState('');
   const [isEditing, setIsEditing] = useState(false);
-  const [disabledInput, setDisabledInput] = useState(false);
 
   const {
     todos,
@@ -45,8 +44,6 @@ export const TodoList: React.FC = () => {
   const { optimisticUpdateTodo, isUpdating } = useOptimisticUpdateTodo();
 
   useEffect(() => {
-    // setDisabledInput(addTodoMutation.isPending || isUpdating ? true : false);
-
     let timeoutId: NodeJS.Timeout;
 
     if (mutationMessage) {
@@ -164,11 +161,8 @@ export const TodoList: React.FC = () => {
               placeholder='Create new task'
               onChangeHandler={(e) => setNewTodoText(e.target.value)}
               value={newTodoText}
-              disabled={disabledInput}
             />
-            <Button color='primaryPurple' disabled={disabledInput}>
-              Add
-            </Button>
+            <Button color='primaryPurple'>Add</Button>
           </form>
           <div className={styles.listContainer}>
             <ul className={styles.todoLists}>

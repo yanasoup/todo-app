@@ -92,7 +92,7 @@ export const useOptimisticUpdateTodo = (): UseOptimisticUpdateTodoReturn => {
             );
 
             if (updatedItemIndex !== -1) {
-              // langsung replace todo lama, tidak perlu di remove dulu
+              // langsung replace todo lama, tidak perlu difilter dulu
               tmpUpdatedData.pages[pageIdx].todos[updatedItemIndex] = {
                 ...page.todos[updatedItemIndex],
                 ...newTodo,

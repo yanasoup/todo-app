@@ -78,17 +78,12 @@ export const useOptimisticDeleteTodo = (): UseOptimisticDeleteTodoReturn => {
     mutationFn: deleteTodo,
 
     onMutate: async ({ id, queryKey }) => {
-      // Cancel any outgoing queries to prevent conflicts
       await queryClient.cancelQueries({ queryKey });
 
-      // Get the current cache state
       const previousData =
         queryClient.getQueryData<InfiniteData<TodosResponse>>(queryKey);
 
-      // console.log('previousData', previousData);
-
       if (previousData) {
-        // Optimistically update the cache by removing the deleted item
         const updatedData = {
           ...previousData,
           pages: previousData.pages.map((page) => ({
@@ -100,24 +95,22 @@ export const useOptimisticDeleteTodo = (): UseOptimisticDeleteTodoReturn => {
         queryClient.setQueryData(queryKey, updatedData);
       }
 
-      return { previousData }; // Return the previous data for rollback
+      return { previousData };
     },
 
     onError: (_error, variables, context) => {
-      // Rollback to the previous data if the mutation fails
       if (context?.previousData) {
         queryClient.setQueryData(variables.queryKey, context.previousData);
       }
     },
 
     onSettled: (_data, _error, variables) => {
-      // Invalidate the query to sync with the server state
       queryClient.invalidateQueries({ queryKey: variables.queryKey });
     },
   });
 
   return {
-    deleteTodo: deleteTodoMutation.mutateAsync, // Use async mutation
+    deleteTodo: deleteTodoMutation.mutateAsync,
     isDeleting: deleteTodoMutation.isPending,
     error: deleteTodoMutation.error,
     isDeleteSuccess: deleteTodoMutation.isSuccess,
