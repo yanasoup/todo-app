@@ -76,6 +76,7 @@ export const useOptimisticCreateTodo = (): useOptimisticCreateTodoType => {
         };
 
         queryClient.setQueryData(queryKey, updatedData);
+        // queryClient.setQueriesData({ queryKey: [queryKey[0],queryKey[1]] }, updatedData);
       }
 
       return { previousData, queryKey };

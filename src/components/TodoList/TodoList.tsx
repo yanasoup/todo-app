@@ -37,7 +37,8 @@ export const TodoList: React.FC = () => {
     isLoading,
     error,
     queryKey,
-  } = useScrollTodos({ limit: 20, sort: 'id', order: 'asc' });
+    // } = useScrollTodos({ limit: 20, sort: 'id', order: 'asc' });
+  } = useScrollTodos({ limit: 20 });
 
   const addTodoMutation = useOptimisticCreateTodo();
   const { deleteTodo } = useOptimisticDeleteTodo();

@@ -102,18 +102,6 @@ export const useOptimisticUpdateTodo = (): UseOptimisticUpdateTodoReturn => {
           }),
         };
 
-        // start: prevent todo to always rendered in 1st order in the list when edited
-        // masalah dengan kode ini adalah, todo item harus berada di pageindex 0
-        // const updatedItemIndex = previousData.pages[0].todos.findIndex(
-        //   (todo) => todo.id === newTodo.id
-        // );
-        // let updatedItem = previousData.pages[0].todos[updatedItemIndex];
-        // updatedItem = { ...updatedItem, ...newTodo };
-
-        // const updatedData = previousData;
-        // updatedData.pages[0].todos[updatedItemIndex] = updatedItem;
-        // end
-
         queryClient.setQueryData(queryKey, updatedData);
       }
 

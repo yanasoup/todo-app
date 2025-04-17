@@ -32,7 +32,7 @@ export const useScrollTodos = ({
   } = useInfiniteQuery({
     queryKey,
     queryFn: getScrollTodos,
-    initialPageParam: undefined,
+    initialPageParam: 1,
     getNextPageParam: (lastPage) => lastPage.nextCursor ?? undefined,
   });
 
