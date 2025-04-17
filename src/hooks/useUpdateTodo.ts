@@ -108,8 +108,11 @@ export const useOptimisticUpdateTodo = (): UseOptimisticUpdateTodoReturn => {
       return { previousData, queryKey };
     },
     onError: (err, newTodo, context) => {
-      if (context)
+      if (context) {
         queryClient.setQueryData(context.queryKey, context.previousData);
+      } else {
+        console.log(err, newTodo);
+      }
     },
     onSettled: (_data, _error, variables) => {
       queryClient.invalidateQueries({ queryKey: variables.queryKey });

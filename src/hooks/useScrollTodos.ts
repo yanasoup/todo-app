@@ -33,7 +33,9 @@ export const useScrollTodos = ({
     queryKey,
     queryFn: getScrollTodos,
     initialPageParam: 1,
-    getNextPageParam: (lastPage) => lastPage.nextCursor ?? undefined,
+    getNextPageParam: (lastPage) => {
+      return lastPage.nextCursor ?? undefined;
+    },
   });
 
   const todos = data?.pages.flatMap((page) => page.todos) ?? [];

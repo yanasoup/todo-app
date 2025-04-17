@@ -15,10 +15,11 @@ export type TodosResponse = {
   hasNextPage: boolean;
 };
 
-// QueryFunction<Tipe Response, Tipe QueryKey>
+// QueryFunction<Tipe Response, Tipe QueryKey, Tipe PageParam>
 export const getScrollTodos: QueryFunction<
   TodosResponse,
-  TodoQueryKeyScroll
+  TodoQueryKeyScroll,
+  number
 > = async ({ queryKey, pageParam = 0, signal }) => {
   const [path, subpath, { completed, limit, sort, order }] = queryKey;
 
